@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>&#x904B;&#x52D5;&#x91D1;&#x5E63;&#x4EFB;&#x52D9;</title>
+    <title>Workout Coin Game</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -26,6 +26,8 @@
     <div id="app" class="max-w-md mx-auto p-4 space-y-5"></div>
 
     <script>
+        document.title = "\u904b\u52d5\u91d1\u5e63\u4efb\u52d9";
+
         document.getElementById('app').innerHTML = `
         <header class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-lg sticky top-2 z-10 backdrop-blur">
             <div class="flex justify-between items-center">
@@ -131,15 +133,16 @@
             <button id="daily-bonus-btn" onclick="claimDailyBonus()" disabled class="w-full mt-2 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center space-x-2 bg-slate-700 text-slate-500 cursor-not-allowed"></button>
         </section>
 
-        <!-- 夜間自律防線（不吃宵夜 + 12:15 準時睡覺） -->
+        <!-- 每日健康自律防線（喝水 2500ml + 不吃宵夜 + 12:15 準時睡覺） -->
         <section class="bg-gradient-to-br from-indigo-950/80 to-slate-800 border border-indigo-500/30 rounded-2xl p-4 shadow-lg space-y-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-lg font-bold text-indigo-200 flex items-center gap-2">\ud83c\udf19 \u591c\u9593\u81ea\u5f8b\u9632\u7dda</h2>
-                <span class="text-xs bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 px-2.5 py-1 rounded-full">\u6bcf\u65e5\u9650\u9818 1 \u6b21</span>
+                <h2 class="text-lg font-bold text-indigo-200 flex items-center gap-2">\ud83c\udf1f \u6bcf\u65e5\u5065\u5eb7\u81ea\u5f8b\u9632\u7dda</h2>
+                <span class="text-xs bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 px-2.5 py-1 rounded-full">\u6bcf\u9805\u6bcf\u65e5\u9650 1 \u6b21</span>
             </div>
-            <p class="text-xs text-slate-400">\u5b88\u4f4f\u7761\u524d\u98f2\u98df\u8207\u7761\u7720\u6642\u9593\uff0c\u8b93\u8eab\u9ad4\u7372\u5f97\u6700\u4f73\u4fee\u5fa9\uff01</p>
+            <p class="text-xs text-slate-400">\u5b88\u4f4f\u6c34\u5206\u3001\u7761\u524d\u98f2\u98df\u8207\u7761\u7720\u6642\u9593\uff0c\u8b93\u8eab\u9ad4\u7372\u5f97\u6700\u4f73\u4ee3\u8b1d\u8207\u4fee\u5fa9\uff01</p>
             
             <div class="space-y-2.5 pt-1">
+                <button id="water-goal-btn" onclick="claimWaterGoalReward()" class="btn-active w-full flex items-center justify-between bg-sky-600/30 hover:bg-sky-600/40 border border-sky-500/50 p-3.5 rounded-xl transition"></button>
                 <button id="no-snack-btn" onclick="claimNoSnackReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
                 <button id="early-sleep-btn" onclick="claimEarlySleepReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
             </div>
@@ -165,7 +168,6 @@
             <ul id="history-list" class="space-y-2 text-xs text-slate-400 max-h-48 overflow-y-auto pr-1"></ul>
         </section>
 
-        <!-- 新增：資料備份與搬家（匯出／匯入存檔代碼） -->
         <section class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-4 shadow-lg space-y-3">
             <div class="flex justify-between items-center">
                 <h2 class="text-sm font-bold text-slate-300">\ud83d\udcbe \u8cc7\u6599\u5099\u4efd\u8207\u642c\u5bb6</h2>
@@ -202,6 +204,7 @@
             todayDate: new Date().toLocaleDateString(),
             todayCount: 0,
             dailyBonusClaimed: false,
+            waterGoalClaimed: false,
             noSnackClaimed: false,
             earlySleepClaimed: false,
             rewards: JSON.parse(JSON.stringify(defaultRewards)),
@@ -303,6 +306,7 @@
             const saved = localStorage.getItem(STORAGE_KEY);
             if (!saved) return JSON.parse(JSON.stringify(defaultData));
             let data = JSON.parse(saved);
+            if (typeof data.waterGoalClaimed === 'undefined') data.waterGoalClaimed = false;
             if (typeof data.noSnackClaimed === 'undefined') data.noSnackClaimed = false;
             if (typeof data.earlySleepClaimed === 'undefined') data.earlySleepClaimed = false;
 
@@ -319,6 +323,7 @@
                 data.todayDate = today;
                 data.todayCount = 0;
                 data.dailyBonusClaimed = false;
+                data.waterGoalClaimed = false;
                 data.noSnackClaimed = false;
                 data.earlySleepClaimed = false;
             }
@@ -330,7 +335,6 @@
             renderUI();
         }
 
-        // 新增：匯出存檔代碼（支援中文字符的 Base64 編碼）
         function exportSaveCode() {
             try {
                 const jsonStr = JSON.stringify(gameState);
@@ -353,7 +357,6 @@
             }
         }
 
-        // 新增：匯入存檔代碼並還原
         function importSaveCode() {
             const input = document.getElementById('import-code-input');
             const code = input.value.trim();
@@ -367,6 +370,7 @@
                 if (typeof importedData.coins !== 'number' || !Array.isArray(importedData.rewards)) {
                     throw new Error('Invalid format');
                 }
+                if (typeof importedData.waterGoalClaimed === 'undefined') importedData.waterGoalClaimed = false;
                 gameState = importedData;
                 saveData();
                 input.value = '';
@@ -405,6 +409,19 @@
             saveData();
         }
 
+        function claimWaterGoalReward() {
+            if (gameState.waterGoalClaimed) return;
+            const reward = 30;
+            gameState.coins += reward;
+            gameState.waterGoalClaimed = true;
+
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            gameState.history.unshift(`\ud83d\udca7 [${timeStr}] \u9054\u6210\u98f2\u6c34\u76ee\u6a19\u3010\u559d\u6c34\u8d85\u904e 2500ml\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99`);
+            if (gameState.history.length > 30) gameState.history.pop();
+            confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+            saveData();
+        }
+
         function claimNoSnackReward() {
             if (gameState.noSnackClaimed) return;
             const reward = 30;
@@ -435,7 +452,7 @@
             const reward = gameState.rewards.find(r => r.id === id);
             if (!reward) return;
             if (gameState.coins < reward.cost) {
-                alert('\u91d1\u5e63\u4e0d\u8db3\u5594\uff01\u518d\u505a\u5e7e\u7d44\u904b\u52d5\u6216\u6e96\u6642\u7761\u89ba\u5427 \ud83d\udcaa');
+                alert('\u91d1\u5e63\u4e0d\u8db3\u5594\uff01\u518d\u505a\u5e7e\u7d44\u904b\u52d5\u6216\u591a\u559d\u6c34\u5427 \ud83d\udcaa');
                 return;
             }
             if (confirm(`\u78ba\u5b9a\u8981\u82b1\u8cbb ${reward.cost} \u91d1\u5e63\u514c\u63db\u300c${reward.name}\u300d\u55ce\uff1f`)) {
@@ -503,6 +520,35 @@
                 bonusBtn.disabled = true;
                 bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-slate-700/60 text-slate-400 cursor-not-allowed";
                 bonusBtn.innerHTML = `\ud83c\udfaf \u518d\u5b8c\u6210 ${3 - gameState.todayCount} \u7d44\u52d5\u4f5c\u5373\u53ef\u9818\u53d6\u300c\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99)\u300d`;
+            }
+
+            const waterGoalBtn = document.getElementById('water-goal-btn');
+            if (gameState.waterGoalClaimed) {
+                waterGoalBtn.disabled = true;
+                waterGoalBtn.className = "w-full flex items-center justify-between bg-emerald-950/40 border border-emerald-700/40 p-3.5 rounded-xl cursor-default";
+                waterGoalBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-emerald-900/50 p-2 rounded-lg">\u2705</span>
+                        <div class="text-left">
+                            <div class="font-bold text-emerald-400">2500ml \u98f2\u6c34\u76ee\u6a19\u5df2\u9054\u6210\uff01</div>
+                            <div class="text-xs text-slate-400">\u5df2\u9818\u53d6 +30 \u91d1\u5e63\uff0c\u8eab\u9ad4\u4ee3\u8b1d\u6eff\u5206</div>
+                        </div>
+                    </div>
+                    <span class="text-xs text-emerald-400 font-bold px-2 py-1">\u5df2\u9054\u6210</span>
+                `;
+            } else {
+                waterGoalBtn.disabled = false;
+                waterGoalBtn.className = "btn-active w-full flex items-center justify-between bg-sky-600/30 hover:bg-sky-600/40 border border-sky-500/50 p-3.5 rounded-xl transition cursor-pointer";
+                waterGoalBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-sky-950 p-2 rounded-lg">\ud83d\udca7</span>
+                        <div class="text-left">
+                            <div class="font-bold text-white">\u4eca\u65e5\u559d\u6c34\u8d85\u904e 2500ml\uff01</div>
+                            <div class="text-xs text-sky-300">\u8db3\u91cf\u88dc\u6c34\u7684\u65b0\u9673\u4ee3\u8b1d\u734e\u52f5</div>
+                        </div>
+                    </div>
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm">+30 \ud83e\ude99</span>
+                `;
             }
 
             const noSnackBtn = document.getElementById('no-snack-btn');
