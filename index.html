@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>&#x904B;&#x52D5;&#x91D1;&#x5E63;&#x4EFB;&#x52D9;</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-active:active { transform: scale(0.96); }
+    </style>
+</head>
+<body class="min-h-screen pb-12 pt-2">
+    <div id="app" class="max-w-md mx-auto p-4 space-y-5"></div>
+
+    <script>
+        document.getElementById('app').innerHTML = `
+        <header class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-lg sticky top-2 z-10 backdrop-blur">
+            <div class="flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-slate-400 block">\u76ee\u524d\u6301\u6709\u91d1\u5e63</span>
+                    <div class="flex items-center space-x-2 mt-1">
+                        <span class="text-3xl">\ud83e\ude99</span>
+                        <span id="coin-display" class="text-3xl font-extrabold text-amber-400">0</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-slate-400 block">\u9023\u7e8c\u904b\u52d5\u5929\u6578</span>
+                    <div class="flex items-center justify-end space-x-1 mt-1">
+                        <span class="text-2xl">\ud83d\udd25</span>
+                        <span id="streak-display" class="text-2xl font-bold text-orange-400">0</span>
+                        <span class="text-sm text-slate-300">\u5929</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="flex justify-between text-xs mb-1">
+                    <span class="text-slate-300">\u4eca\u65e5 15 \u5206\u9418\u904b\u52d5\u76ee\u6a19\uff08\u5b8c\u6210 3 \u7d44\u52d5\u4f5c\uff09</span>
+                    <span id="daily-progress-text" class="text-emerald-400 font-semibold">0 / 3 \u7d44</span>
+                </div>
+                <div class="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                    <div id="daily-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">\u26a1 \u4eca\u65e5\u904b\u52d5\u6253\u5361</h2>
+                <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full">\u76ee\u6a19\uff1a10~15 \u5206\u9418</span>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-3 pt-1">
+                <button onclick="doExercise('\\u4f0f\\u5730\\u633a\\u8eab', 15)" class="btn-active flex items-center justify-between bg-slate-700/70 hover:bg-slate-700 border border-slate-600 p-3.5 rounded-xl transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-slate-800 p-2 rounded-lg">\ud83d\udcaa</span>
+                        <div class="text-left">
+                            <div class="font-bold text-white">\u4f0f\u5730\u633a\u8eab (1\u7d44)</div>
+                            <div class="text-xs text-slate-400">\u80f8\u808c\u3001\u6838\u5fc3\u8207\u624b\u81c2\u808c\u529b</div>
+                        </div>
+                    </div>
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm">+15 \ud83e\ude99</span>
+                </button>
+
+                <button onclick="doExercise('\\u6df1\\u8e72', 15)" class="btn-active flex items-center justify-between bg-slate-700/70 hover:bg-slate-700 border border-slate-600 p-3.5 rounded-xl transition">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-slate-800 p-2 rounded-lg">\ud83e\uddb5</span>
+                        <div class="text-left">
+                            <div class="font-bold text-white">\u6df1\u8e72 (1\u7d44)</div>
+                            <div class="text-xs text-slate-400">\u4e0b\u534a\u8eab\u808c\u7fa4\u8207\u71c3\u8102\u4e3b\u529b</div>
+                        </div>
+                    </div>
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm">+15 \ud83e\ude99</span>
+                </button>
+
+                <div class="bg-slate-700/70 border border-slate-600 p-3.5 rounded-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl bg-slate-800 p-2 rounded-lg">\u23f1\ufe0f</span>
+                            <div class="text-left">
+                                <div class="font-bold text-white">\u68d2\u5f0f\u6490\u9ad4 (\u8a08\u6642\u6311\u6230)</div>
+                                <div class="text-xs text-slate-400">\u5012\u6578\u7d50\u675f\u81ea\u52d5\u767c\u653e\u91d1\u5e63\u8207\u63d0\u793a\u97f3</div>
+                            </div>
+                        </div>
+                        <button onclick="doExercise('\\u68d2\\u5f0f (\\u624b\\u52d5)', 15)" class="btn-active text-xs bg-slate-800 hover:bg-slate-600 text-slate-300 border border-slate-600 px-2.5 py-1.5 rounded-lg transition">
+                            \u624b\u52d5 +15 \ud83e\ude99
+                        </button>
+                    </div>
+
+                    <div id="plank-select-controls" class="grid grid-cols-2 gap-2 pt-1">
+                        <button onclick="startPlankTimer(30, 15)" class="btn-active bg-teal-600/30 hover:bg-teal-600/50 border border-teal-500/40 text-teal-200 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-between transition">
+                            <span>\u25b6\ufe0f \u8a08\u6642 30 \u79d2</span>
+                            <span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-xs">+15 \ud83e\ude99</span>
+                        </button>
+                        <button onclick="startPlankTimer(60, 30)" class="btn-active bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-200 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-between transition">
+                            <span>\ud83d\udd25 \u6311\u6230 60 \u79d2</span>
+                            <span class="bg-amber-400 text-slate-950 px-2 py-0.5 rounded text-xs font-extrabold">+30 \ud83e\ude99</span>
+                        </button>
+                    </div>
+
+                    <div id="plank-timer-active" class="hidden bg-slate-900/90 border border-teal-500/50 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span id="plank-target-label" class="text-xs text-teal-400 font-semibold block">\u6490\u4f4f\uff01\u6838\u5fc3\u6536\u7dca\uff01</span>
+                                <span id="plank-countdown-text" class="text-3xl font-mono font-extrabold text-white tracking-wider">00:30</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button id="plank-pause-btn" onclick="togglePausePlank()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold px-3 py-2 rounded-lg transition">\u66ab\u505c</button>
+                                <button onclick="cancelPlankTimer()" class="bg-red-900/50 hover:bg-red-800/70 text-red-300 border border-red-700/50 text-xs font-bold px-3 py-2 rounded-lg transition">\u653e\u68c4</button>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                            <div id="plank-timer-bar" class="bg-gradient-to-r from-teal-400 to-amber-400 h-2 rounded-full transition-all duration-1000" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="daily-bonus-btn" onclick="claimDailyBonus()" disabled class="w-full mt-2 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center space-x-2 bg-slate-700 text-slate-500 cursor-not-allowed"></button>
+        </section>
+
+        <!-- 夜間自律防線（不吃宵夜 + 12:15 準時睡覺） -->
+        <section class="bg-gradient-to-br from-indigo-950/80 to-slate-800 border border-indigo-500/30 rounded-2xl p-4 shadow-lg space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-indigo-200 flex items-center gap-2">\ud83c\udf19 \u591c\u9593\u81ea\u5f8b\u9632\u7dda</h2>
+                <span class="text-xs bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 px-2.5 py-1 rounded-full">\u6bcf\u65e5\u9650\u9818 1 \u6b21</span>
+            </div>
+            <p class="text-xs text-slate-400">\u5b88\u4f4f\u7761\u524d\u98f2\u98df\u8207\u7761\u7720\u6642\u9593\uff0c\u8b93\u8eab\u9ad4\u7372\u5f97\u6700\u4f73\u4fee\u5fa9\uff01</p>
+            
+            <div class="space-y-2.5 pt-1">
+                <button id="no-snack-btn" onclick="claimNoSnackReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
+                <button id="early-sleep-btn" onclick="claimEarlySleepReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
+            </div>
+        </section>
+
+        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-white">\ud83c\udf81 \u73fe\u5be6\u734e\u52f5\u514c\u63db\u6240</h2>
+                <button onclick="toggleAddReward()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition">+ \u65b0\u589e\u81ea\u8a02\u734e\u52f5</button>
+            </div>
+            <div id="add-reward-form" class="hidden bg-slate-900/80 p-3 rounded-xl border border-slate-700 space-y-2">
+                <input id="new-reward-name" type="text" placeholder="\u8f38\u5165\u734e\u52f5\u540d\u7a31" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                <div class="flex space-x-2">
+                    <input id="new-reward-cost" type="number" placeholder="\u6240\u9700\u91d1\u5e63 (500)" class="w-1/2 bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                    <button onclick="addCustomReward()" class="w-1/2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-bold transition">\u5132\u5b58\u734e\u52f5</button>
+                </div>
+            </div>
+            <div id="reward-list" class="space-y-2.5"></div>
+        </section>
+
+        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg space-y-3">
+            <h2 class="text-sm font-bold text-slate-300">\ud83d\udcdc \u6700\u8fd1\u7d00\u9304</h2>
+            <ul id="history-list" class="space-y-2 text-xs text-slate-400 max-h-48 overflow-y-auto pr-1"></ul>
+        </section>
+
+        <!-- 新增：資料備份與搬家（匯出／匯入存檔代碼） -->
+        <section class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-4 shadow-lg space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-sm font-bold text-slate-300">\ud83d\udcbe \u8cc7\u6599\u5099\u4efd\u8207\u642c\u5bb6</h2>
+                <button onclick="exportSaveCode()" class="btn-active bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">
+                    \ud83d\udce4 \u4e00\u9375\u8907\u88fd\u5099\u4efd\u78bc
+                </button>
+            </div>
+            <p class="text-xs text-slate-400">\u63db\u7db2\u5740\u6216\u63db\u624b\u6a5f\u524d\uff0c\u8907\u88fd\u5099\u4efd\u78bc\u4e26\u8cbc\u5728\u4e0b\u65b9\u5373\u53ef\u7121\u75db\u9084\u539f\u91d1\u5e63\uff1a</p>
+            <div class="flex space-x-2">
+                <input id="import-code-input" type="text" placeholder="\u5728\u6b64\u8cbc\u4e0a\u5099\u4efd\u4ee3\u78bc..." class="w-2/3 bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-sky-500">
+                <button onclick="importSaveCode()" class="btn-active w-1/3 bg-slate-700 hover:bg-emerald-600 text-slate-200 hover:text-white rounded-lg text-xs font-bold transition">
+                    \ud83d\udce5 \u9084\u539f\u5b58\u6a94
+                </button>
+            </div>
+        </section>
+
+        <footer class="text-center pt-2">
+            <button onclick="resetData()" class="text-xs text-slate-500 hover:text-red-400 underline">\u91cd\u7f6e\u6240\u6709\u6e2c\u8a66\u8cc7\u6599</button>
+        </footer>
+        `;
+
+        const STORAGE_KEY = 'vibe_workout_game_v1';
+
+        const defaultRewards = [
+            { id: 1, name: '\ud83e\udd64 \u4eab\u53d7\u4e00\u676f\u624b\u6416\u98f2\u6216\u9ede\u5fc3', cost: 150 },
+            { id: 2, name: '\ud83c\udfae \u81ea\u7531\u6253\u96fb\u52d5 / \u653e\u9b06 2 \u5c0f\u6642', cost: 350 },
+            { id: 3, name: '\ud83d\udd25 \u5165\u624b\u559c\u6b61\u7684\u5361\u724c\u6216\u6536\u85cf\u5468\u908a', cost: 1000 }
+        ];
+
+        const defaultData = {
+            coins: 0,
+            streak: 0,
+            lastCompletedDate: null,
+            todayDate: new Date().toLocaleDateString(),
+            todayCount: 0,
+            dailyBonusClaimed: false,
+            noSnackClaimed: false,
+            earlySleepClaimed: false,
+            rewards: JSON.parse(JSON.stringify(defaultRewards)),
+            history: []
+        };
+
+        let gameState = loadData();
+        let plankInterval = null;
+        let plankTotalSeconds = 30;
+        let plankRemainingSeconds = 30;
+        let plankRewardCoins = 15;
+        let plankPaused = false;
+        let audioCtx = null;
+
+        function playBeep(freq = 600, duration = 0.12, type = 'sine') {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function startPlankTimer(seconds, reward) {
+            if (plankInterval) clearInterval(plankInterval);
+            plankTotalSeconds = seconds;
+            plankRemainingSeconds = seconds;
+            plankRewardCoins = reward;
+            plankPaused = false;
+
+            document.getElementById('plank-select-controls').classList.add('hidden');
+            document.getElementById('plank-timer-active').classList.remove('hidden');
+            document.getElementById('plank-pause-btn').innerText = '\u66ab\u505c';
+            document.getElementById('plank-target-label').innerText = `\ud83d\udd25 \u68d2\u5f0f ${seconds} \u79d2\u6311\u6230\u9032\u884c\u4e2d...`;
+
+            playBeep(523.25, 0.15);
+            updatePlankTimerUI();
+
+            plankInterval = setInterval(() => {
+                if (plankPaused) return;
+                plankRemainingSeconds -= 1;
+                updatePlankTimerUI();
+
+                if (plankRemainingSeconds > 0 && plankRemainingSeconds <= 3) {
+                    playBeep(659.25, 0.12);
+                }
+
+                if (plankRemainingSeconds <= 0) {
+                    clearInterval(plankInterval);
+                    plankInterval = null;
+                    playBeep(783.99, 0.15);
+                    setTimeout(() => playBeep(1046.5, 0.4, 'triangle'), 160);
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+                    document.getElementById('plank-timer-active').classList.add('hidden');
+                    document.getElementById('plank-select-controls').classList.remove('hidden');
+                    doExercise(`\u68d2\u5f0f\u6490\u9ad4 (${plankTotalSeconds}\u79d2\u6311\u6230)`, plankRewardCoins);
+                }
+            }, 1000);
+        }
+
+        function updatePlankTimerUI() {
+            const mins = String(Math.floor(plankRemainingSeconds / 60)).padStart(2, '0');
+            const secs = String(plankRemainingSeconds % 60).padStart(2, '0');
+            document.getElementById('plank-countdown-text').innerText = `${mins}:${secs}`;
+            const percent = Math.max(0, (plankRemainingSeconds / plankTotalSeconds) * 100);
+            document.getElementById('plank-timer-bar').style.width = `${percent}%`;
+        }
+
+        function togglePausePlank() {
+            plankPaused = !plankPaused;
+            const pauseBtn = document.getElementById('plank-pause-btn');
+            const label = document.getElementById('plank-target-label');
+            if (plankPaused) {
+                pauseBtn.innerText = '\u7e7c\u7e8c';
+                label.innerText = '\u23f8\ufe0f \u8a08\u6642\u5df2\u66ab\u505c';
+            } else {
+                pauseBtn.innerText = '\u66ab\u505c';
+                label.innerText = `\ud83d\udd25 \u68d2\u5f0f ${plankTotalSeconds} \u79d2\u6311\u6230\u9032\u884c\u4e2d...`;
+            }
+        }
+
+        function cancelPlankTimer() {
+            if (plankInterval) clearInterval(plankInterval);
+            plankInterval = null;
+            document.getElementById('plank-timer-active').classList.add('hidden');
+            document.getElementById('plank-select-controls').classList.remove('hidden');
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return JSON.parse(JSON.stringify(defaultData));
+            let data = JSON.parse(saved);
+            if (typeof data.noSnackClaimed === 'undefined') data.noSnackClaimed = false;
+            if (typeof data.earlySleepClaimed === 'undefined') data.earlySleepClaimed = false;
+
+            if (data.rewards && data.rewards.length >= 3) {
+                data.rewards.forEach(r => {
+                    if (r.id === 1) r.name = defaultRewards[0].name;
+                    if (r.id === 2) r.name = defaultRewards[1].name;
+                    if (r.id === 3) r.name = defaultRewards[2].name;
+                });
+            }
+
+            const today = new Date().toLocaleDateString();
+            if (data.todayDate !== today) {
+                data.todayDate = today;
+                data.todayCount = 0;
+                data.dailyBonusClaimed = false;
+                data.noSnackClaimed = false;
+                data.earlySleepClaimed = false;
+            }
+            return data;
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+            renderUI();
+        }
+
+        // 新增：匯出存檔代碼（支援中文字符的 Base64 編碼）
+        function exportSaveCode() {
+            try {
+                const jsonStr = JSON.stringify(gameState);
+                const code = btoa(encodeURIComponent(jsonStr));
+                const input = document.getElementById('import-code-input');
+                input.value = code;
+                input.select();
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(code).then(() => {
+                        alert('\u2705 \u5099\u4efd\u4ee3\u78bc\u5df2\u81ea\u52d5\u8907\u88fd\u5230\u526a\u8cbc\u7c3f\uff01\n\u8acb\u8cbc\u5230 LINE \u6216\u5099\u5fd8\u9304\u4fdd\u5b58\u3002');
+                    }).catch(() => {
+                        alert('\u2705 \u5099\u4efd\u78bc\u5df2\u7522\u751f\u5728\u4e0b\u65b9\u8f38\u5165\u6846\uff0c\u8acb\u9577\u6309\u5168\u9078\u8907\u88fd\uff01');
+                    });
+                } else {
+                    document.execCommand('copy');
+                    alert('\u2705 \u5099\u4efd\u4ee3\u78bc\u5df2\u8907\u88fd\uff01\u8acb\u8cbc\u5230\u5099\u5fd8\u9304\u4fdd\u5b58\u3002');
+                }
+            } catch (e) {
+                alert('\u532f\u51fa\u5931\u6557\uff0c\u8acb\u7a0d\u5f8c\u518d\u8a66\u3002');
+            }
+        }
+
+        // 新增：匯入存檔代碼並還原
+        function importSaveCode() {
+            const input = document.getElementById('import-code-input');
+            const code = input.value.trim();
+            if (!code) {
+                alert('\u8acb\u5148\u5728\u8f38\u5165\u6846\u8cbc\u4e0a\u5099\u4efd\u4ee3\u78bc\uff01');
+                return;
+            }
+            try {
+                const jsonStr = decodeURIComponent(atob(code));
+                const importedData = JSON.parse(jsonStr);
+                if (typeof importedData.coins !== 'number' || !Array.isArray(importedData.rewards)) {
+                    throw new Error('Invalid format');
+                }
+                gameState = importedData;
+                saveData();
+                input.value = '';
+                confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+                alert(`\ud83c\udf89 \u5b58\u6a94\u9084\u539f\u6210\u529f\uff01\u76ee\u524d\u6301\u6709 ${gameState.coins} \u91d1\u5e63\u3002`);
+            } catch (e) {
+                alert('\u274c \u5099\u4efd\u4ee3\u78bc\u683c\u5f0f\u932f\u8aa4\uff0c\u8acb\u78ba\u8a8d\u662f\u5426\u5b8c\u6574\u8907\u88fd\uff01');
+            }
+        }
+
+        function doExercise(name, coinReward) {
+            gameState.coins += coinReward;
+            gameState.todayCount += 1;
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            gameState.history.unshift(`\u2705 [${timeStr}] \u5b8c\u6210 1 \u7d44\u3010${name}\u3011\uff0c\u7372\u5f97 +${coinReward} \ud83e\ude99`);
+            if (gameState.history.length > 30) gameState.history.pop();
+            confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
+            saveData();
+        }
+
+        function claimDailyBonus() {
+            if (gameState.todayCount < 3 || gameState.dailyBonusClaimed) return;
+            const bonus = 35;
+            gameState.coins += bonus;
+            gameState.dailyBonusClaimed = true;
+
+            const today = new Date().toLocaleDateString();
+            if (gameState.lastCompletedDate !== today) {
+                gameState.streak += 1;
+                gameState.lastCompletedDate = today;
+            }
+
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            gameState.history.unshift(`\ud83c\udf89 [${timeStr}] \u9054\u6210\u4eca\u65e5 15 \u5206\u9418\u76ee\u6a19\uff01\u9818\u53d6\u5b8c\u8cfd\u734e\u52f5 +${bonus} \ud83e\ude99\uff08\u9023\u7e8c ${gameState.streak} \u5929\uff09`);
+            confetti({ particleCount: 80, spread: 90, origin: { y: 0.6 } });
+            saveData();
+        }
+
+        function claimNoSnackReward() {
+            if (gameState.noSnackClaimed) return;
+            const reward = 30;
+            gameState.coins += reward;
+            gameState.noSnackClaimed = true;
+
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            gameState.history.unshift(`\ud83c\udf19 [${timeStr}] \u5b88\u4f4f\u6df1\u591c\u9632\u7dda\u3010\u4eca\u65e5\u4e0d\u5403\u5bb5\u591c\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99`);
+            if (gameState.history.length > 30) gameState.history.pop();
+            confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+            saveData();
+        }
+
+        function claimEarlySleepReward() {
+            if (gameState.earlySleepClaimed) return;
+            const reward = 30;
+            gameState.coins += reward;
+            gameState.earlySleepClaimed = true;
+
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            gameState.history.unshift(`\ud83d\udecc [${timeStr}] \u9054\u6210\u4f5c\u606f\u76ee\u6a19\u301012:15 \u6e96\u6642\u7761\u89ba\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99`);
+            if (gameState.history.length > 30) gameState.history.pop();
+            confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+            saveData();
+        }
+
+        function redeemReward(id) {
+            const reward = gameState.rewards.find(r => r.id === id);
+            if (!reward) return;
+            if (gameState.coins < reward.cost) {
+                alert('\u91d1\u5e63\u4e0d\u8db3\u5594\uff01\u518d\u505a\u5e7e\u7d44\u904b\u52d5\u6216\u6e96\u6642\u7761\u89ba\u5427 \ud83d\udcaa');
+                return;
+            }
+            if (confirm(`\u78ba\u5b9a\u8981\u82b1\u8cbb ${reward.cost} \u91d1\u5e63\u514c\u63db\u300c${reward.name}\u300d\u55ce\uff1f`)) {
+                gameState.coins -= reward.cost;
+                const dateStr = new Date().toLocaleDateString();
+                gameState.history.unshift(`\ud83c\udf81 [${dateStr}] \u6210\u529f\u514c\u63db\u734e\u52f5\uff1a\u3010${reward.name}\u3011(-${reward.cost} \ud83e\ude99)`);
+                confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+                saveData();
+            }
+        }
+
+        function toggleAddReward() {
+            document.getElementById('add-reward-form').classList.toggle('hidden');
+        }
+
+        function addCustomReward() {
+            const nameInput = document.getElementById('new-reward-name');
+            const costInput = document.getElementById('new-reward-cost');
+            const name = nameInput.value.trim();
+            const cost = parseInt(costInput.value, 10);
+
+            if (!name || isNaN(cost) || cost <= 0) {
+                alert('\u8acb\u8f38\u5165\u6709\u6548\u7684\u734e\u52f5\u540d\u7a31\u8207\u5927\u65bc 0 \u7684\u91d1\u5e63\u6578\u91cf\uff01');
+                return;
+            }
+            gameState.rewards.push({ id: Date.now(), name: '\u2b50 ' + name, cost: cost });
+            nameInput.value = '';
+            costInput.value = '';
+            document.getElementById('add-reward-form').classList.add('hidden');
+            saveData();
+        }
+
+        function deleteReward(id) {
+            gameState.rewards = gameState.rewards.filter(r => r.id !== id);
+            saveData();
+        }
+
+        function resetData() {
+            if (confirm('\u78ba\u5b9a\u8981\u6e05\u7a7a\u6240\u6709\u91d1\u5e63\u8207\u7d00\u9304\u55ce\uff1f\uff08\u6e2c\u8a66\u7528\uff09')) {
+                cancelPlankTimer();
+                localStorage.removeItem(STORAGE_KEY);
+                gameState = JSON.parse(JSON.stringify(defaultData));
+                renderUI();
+            }
+        }
+
+        function renderUI() {
+            document.getElementById('coin-display').innerText = gameState.coins;
+            document.getElementById('streak-display').innerText = gameState.streak;
+
+            const progressCount = Math.min(gameState.todayCount, 3);
+            document.getElementById('daily-progress-text').innerText = `${gameState.todayCount} / 3 \u7d44`;
+            document.getElementById('daily-progress-bar').style.width = `${(progressCount / 3) * 100}%`;
+
+            const bonusBtn = document.getElementById('daily-bonus-btn');
+            if (gameState.dailyBonusClaimed) {
+                bonusBtn.disabled = true;
+                bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-emerald-900/40 text-emerald-400 border border-emerald-700/50 cursor-default";
+                bonusBtn.innerHTML = "\u2705 \u4eca\u65e5 15 \u5206\u9418\u5b8c\u8cfd\u734e\u52f5\u5df2\u9818\u53d6\uff01\u660e\u5929\u7e7c\u7e8c\u4fdd\u6301\uff01";
+            } else if (gameState.todayCount >= 3) {
+                bonusBtn.disabled = false;
+                bonusBtn.className = "btn-active w-full mt-2 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20 animate-pulse cursor-pointer";
+                bonusBtn.innerHTML = "\ud83c\udf89 \u9ede\u64ca\u9818\u53d6\u300c\u4eca\u65e5 15 \u5206\u9418\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99)\u300d\uff01";
+            } else {
+                bonusBtn.disabled = true;
+                bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-slate-700/60 text-slate-400 cursor-not-allowed";
+                bonusBtn.innerHTML = `\ud83c\udfaf \u518d\u5b8c\u6210 ${3 - gameState.todayCount} \u7d44\u52d5\u4f5c\u5373\u53ef\u9818\u53d6\u300c\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99)\u300d`;
+            }
+
+            const noSnackBtn = document.getElementById('no-snack-btn');
+            if (gameState.noSnackClaimed) {
+                noSnackBtn.disabled = true;
+                noSnackBtn.className = "w-full flex items-center justify-between bg-emerald-950/40 border border-emerald-700/40 p-3.5 rounded-xl cursor-default";
+                noSnackBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-emerald-900/50 p-2 rounded-lg">\u2705</span>
+                        <div class="text-left">
+                            <div class="font-bold text-emerald-400">\u4eca\u65e5\u5bb5\u591c\u9632\u7dda\u5df2\u5b88\u4f4f\uff01</div>
+                            <div class="text-xs text-slate-400">\u5df2\u9818\u53d6 +30 \u91d1\u5e63\uff0c\u660e\u5929\u7e7c\u7e8c\u4fdd\u6301</div>
+                        </div>
+                    </div>
+                    <span class="text-xs text-emerald-400 font-bold px-2 py-1">\u5df2\u9054\u6210</span>
+                `;
+            } else {
+                noSnackBtn.disabled = false;
+                noSnackBtn.className = "btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition cursor-pointer";
+                noSnackBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-indigo-950 p-2 rounded-lg">\ud83d\udee1\ufe0f</span>
+                        <div class="text-left">
+                            <div class="font-bold text-white">\u4eca\u65e5\u6210\u529f\u4e0d\u5403\u5bb5\u591c\uff01</div>
+                            <div class="text-xs text-indigo-300">\u6230\u52dd\u5634\u995e\u7684\u610f\u5fd7\u529b\u734e\u52f5</div>
+                        </div>
+                    </div>
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm">+30 \ud83e\ude99</span>
+                `;
+            }
+
+            const earlySleepBtn = document.getElementById('early-sleep-btn');
+            if (gameState.earlySleepClaimed) {
+                earlySleepBtn.disabled = true;
+                earlySleepBtn.className = "w-full flex items-center justify-between bg-emerald-950/40 border border-emerald-700/40 p-3.5 rounded-xl cursor-default";
+                earlySleepBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-emerald-900/50 p-2 rounded-lg">\u2705</span>
+                        <div class="text-left">
+                            <div class="font-bold text-emerald-400">12:15 \u6e96\u6642\u7761\u89ba\u5df2\u9054\u6210\uff01</div>
+                            <div class="text-xs text-slate-400">\u5df2\u9818\u53d6 +30 \u91d1\u5e63\uff0c\u795d\u6709\u500b\u597d\u5922</div>
+                        </div>
+                    </div>
+                    <span class="text-xs text-emerald-400 font-bold px-2 py-1">\u5df2\u9054\u6210</span>
+                `;
+            } else {
+                earlySleepBtn.disabled = false;
+                earlySleepBtn.className = "btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition cursor-pointer";
+                earlySleepBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl bg-indigo-950 p-2 rounded-lg">\ud83d\udecc</span>
+                        <div class="text-left">
+                            <div class="font-bold text-white">\u6e96\u6642\u65bc 12:15 \u524d\u7761\u89ba\uff01</div>
+                            <div class="text-xs text-indigo-300">\u4e0d\u71ac\u591c\u7684\u9ad4\u529b\u8207\u4ee3\u8b1d\u52a0\u6210\u734e\u52f5</div>
+                        </div>
+                    </div>
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm">+30 \ud83e\ude99</span>
+                `;
+            }
+
+            const rewardList = document.getElementById('reward-list');
+            rewardList.innerHTML = '';
+            gameState.rewards.forEach(reward => {
+                const canAfford = gameState.coins >= reward.cost;
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between bg-slate-700/40 border border-slate-700 p-3 rounded-xl";
+                item.innerHTML = `
+                    <div class="pr-2">
+                        <div class="font-medium text-sm text-slate-100">${reward.name}</div>
+                        <div class="text-xs text-amber-400 font-bold mt-0.5">${reward.cost} \ud83e\ude99</div>
+                    </div>
+                    <div class="flex items-center space-x-1.5 shrink-0">
+                        <button onclick="redeemReward(${reward.id})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${canAfford ? 'bg-amber-400 hover:bg-amber-300 text-slate-950 shadow' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}">
+                            \u514c\u63db
+                        </button>
+                        <button onclick="deleteReward(${reward.id})" class="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-700 transition" aria-label="Delete">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                rewardList.appendChild(item);
+            });
+
+            const historyList = document.getElementById('history-list');
+            if (gameState.history.length === 0) {
+                historyList.innerHTML = '<li class="text-slate-500 italic">\u5c1a\u7121\u7d00\u9304\uff0c\u9ede\u64ca\u4e0a\u65b9\u6309\u9215\u958b\u59cb\u7b2c\u4e00\u7d44\u904b\u52d5\u5427\uff01</li>';
+            } else {
+                historyList.innerHTML = gameState.history.map(item => `<li class="border-b border-slate-700/50 pb-1.5">${item}</li>`).join('');
+            }
+        }
+
+        renderUI();
+    </script>
+</body>
+</html>
