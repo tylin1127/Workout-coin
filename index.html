@@ -33,23 +33,33 @@
             <div class="flex justify-between items-center">
                 <div>
                     <span class="text-xs text-slate-400 block">\u76ee\u524d\u6301\u6709\u91d1\u5e63</span>
-                    <div class="flex items-center space-x-2 mt-1">
+                    <div class="flex items-center space-x-1.5 mt-1">
                         <span class="text-3xl">\ud83e\ude99</span>
                         <span id="coin-display" class="text-3xl font-extrabold text-amber-400">0</span>
                     </div>
                 </div>
-                <div class="text-right">
-                    <span class="text-xs text-slate-400 block">\u9023\u7e8c\u904b\u52d5\u5929\u6578</span>
-                    <div class="flex items-center justify-end space-x-1 mt-1">
-                        <span class="text-2xl">\ud83d\udd25</span>
-                        <span id="streak-display" class="text-2xl font-bold text-orange-400">0</span>
-                        <span class="text-sm text-slate-300">\u5929</span>
+                <div class="flex space-x-4">
+                    <div class="text-right cursor-pointer group" onclick="editWorkoutCountManually()">
+                        <span class="text-xs text-slate-400 block group-hover:text-teal-300 transition">\u5169\u65e5\u4e00\u7df4\u9054\u6a19</span>
+                        <div class="flex items-center justify-end space-x-1 mt-1">
+                            <span class="text-xl">\u26a1</span>
+                            <span id="workout-streak-display" class="text-2xl font-bold text-teal-400 underline decoration-dotted underline-offset-4">0</span>
+                            <span class="text-xs text-slate-300">\u6b21</span>
+                        </div>
+                    </div>
+                    <div class="text-right cursor-pointer group border-l border-slate-700 pl-4" onclick="editStreakManually()">
+                        <span class="text-xs text-slate-400 block group-hover:text-amber-300 transition">\u6bcf\u65e5\u81ea\u5f8b\u9023\u7e8c</span>
+                        <div class="flex items-center justify-end space-x-1 mt-1">
+                            <span class="text-xl">\ud83d\udd25</span>
+                            <span id="streak-display" class="text-2xl font-bold text-orange-400 underline decoration-dotted underline-offset-4">0</span>
+                            <span class="text-xs text-slate-300">\u5929</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="mt-4">
                 <div class="flex justify-between text-xs mb-1">
-                    <span class="text-slate-300">\u4eca\u65e5 15 \u5206\u9418\u904b\u52d5\u76ee\u6a19\uff08\u5b8c\u6210 3 \u7d44\u52d5\u4f5c\uff09</span>
+                    <span id="workout-schedule-badge" class="text-slate-300">\u904b\u52d5\u9032\u5ea6\uff08\u6bcf\u5169\u5929 1 \u6b21\uff0c\u6eff 3 \u7d44\u81ea\u52d5\u5b8c\u8cfd\uff09</span>
                     <span id="daily-progress-text" class="text-emerald-400 font-semibold">0 / 3 \u7d44</span>
                 </div>
                 <div class="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
@@ -58,10 +68,26 @@
             </div>
         </header>
 
+        <!-- 每日健康自律防線（天天執行：喝水 2500ml + 不吃宵夜 + 12:15 準時睡覺） -->
+        <section class="bg-gradient-to-br from-indigo-950/80 to-slate-800 border border-indigo-500/30 rounded-2xl p-4 shadow-lg space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-indigo-200 flex items-center gap-2">\ud83d\udd25 \u5929\u5929\u81ea\u5f8b\u4efb\u52d9</h2>
+                <span class="text-xs bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 px-2.5 py-1 rounded-full">\u9054\u6210\u4efb\u4e00\u9805\u5373\u7d2f\u7a4d\u9023\u7e8c\u5929\u6578</span>
+            </div>
+            <p class="text-xs text-slate-400">\u6bcf\u5929\u57fa\u672c\u529f\uff1a\u559d\u6eff\u6c34\u3001\u4e0d\u5403\u5bb5\u591c\u300112:15 \u6e96\u6642\u7761\u89ba\uff01</p>
+            
+            <div class="space-y-2.5 pt-1">
+                <button id="water-goal-btn" onclick="claimWaterGoalReward()" class="btn-active w-full flex items-center justify-between bg-sky-600/30 hover:bg-sky-600/40 border border-sky-500/50 p-3.5 rounded-xl transition"></button>
+                <button id="no-snack-btn" onclick="claimNoSnackReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
+                <button id="early-sleep-btn" onclick="claimEarlySleepReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
+            </div>
+        </section>
+
+        <!-- 兩日一練運動區 -->
         <section class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg space-y-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-lg font-bold text-white flex items-center gap-2">\u26a1 \u4eca\u65e5\u904b\u52d5\u6253\u5361</h2>
-                <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full">\u76ee\u6a19\uff1a10~15 \u5206\u9418</span>
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">\u26a1 \u5169\u65e5\u4e00\u7df4\u30fb\u904b\u52d5\u6253\u5361</h2>
+                <span id="rest-day-indicator" class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full">10~15 \u5206\u9418 / \u505a\u4e00\u4f11\u4e00</span>
             </div>
             
             <div class="grid grid-cols-1 gap-3 pt-1">
@@ -133,21 +159,6 @@
             <button id="daily-bonus-btn" onclick="claimDailyBonus()" disabled class="w-full mt-2 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center space-x-2 bg-slate-700 text-slate-500 cursor-not-allowed"></button>
         </section>
 
-        <!-- 每日健康自律防線（喝水 2500ml + 不吃宵夜 + 12:15 準時睡覺） -->
-        <section class="bg-gradient-to-br from-indigo-950/80 to-slate-800 border border-indigo-500/30 rounded-2xl p-4 shadow-lg space-y-3">
-            <div class="flex justify-between items-center">
-                <h2 class="text-lg font-bold text-indigo-200 flex items-center gap-2">\ud83c\udf1f \u6bcf\u65e5\u5065\u5eb7\u81ea\u5f8b\u9632\u7dda</h2>
-                <span class="text-xs bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 px-2.5 py-1 rounded-full">\u6bcf\u9805\u6bcf\u65e5\u9650 1 \u6b21</span>
-            </div>
-            <p class="text-xs text-slate-400">\u5b88\u4f4f\u6c34\u5206\u3001\u7761\u524d\u98f2\u98df\u8207\u7761\u7720\u6642\u9593\uff0c\u8b93\u8eab\u9ad4\u7372\u5f97\u6700\u4f73\u4ee3\u8b1d\u8207\u4fee\u5fa9\uff01</p>
-            
-            <div class="space-y-2.5 pt-1">
-                <button id="water-goal-btn" onclick="claimWaterGoalReward()" class="btn-active w-full flex items-center justify-between bg-sky-600/30 hover:bg-sky-600/40 border border-sky-500/50 p-3.5 rounded-xl transition"></button>
-                <button id="no-snack-btn" onclick="claimNoSnackReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
-                <button id="early-sleep-btn" onclick="claimEarlySleepReward()" class="btn-active w-full flex items-center justify-between bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/50 p-3.5 rounded-xl transition"></button>
-            </div>
-        </section>
-
         <section class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-lg space-y-4">
             <div class="flex justify-between items-center">
                 <h2 class="text-lg font-bold text-white">\ud83c\udf81 \u73fe\u5be6\u734e\u52f5\u514c\u63db\u6240</h2>
@@ -191,6 +202,23 @@
 
         const STORAGE_KEY = 'vibe_workout_game_v1';
 
+        function getTodayStr() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function getYesterdayStr() {
+            const d = new Date();
+            d.setDate(d.getDate() - 1);
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
         const defaultRewards = [
             { id: 1, name: '\ud83e\udd64 \u4eab\u53d7\u4e00\u676f\u624b\u6416\u98f2\u6216\u9ede\u5fc3', cost: 150 },
             { id: 2, name: '\ud83c\udfae \u81ea\u7531\u6253\u96fb\u52d5 / \u653e\u9b06 2 \u5c0f\u6642', cost: 350 },
@@ -199,9 +227,11 @@
 
         const defaultData = {
             coins: 0,
-            streak: 0,
-            lastCompletedDate: null,
-            todayDate: new Date().toLocaleDateString(),
+            streak: 0,               // 每日自律連續天數（喝水/戒宵夜/早睡/運動任一即可推進）
+            workoutSessions: 0,      // 兩日一練達標總次數
+            lastHabitDate: null,     // 上次達成每日自律的日期
+            lastCompletedDate: null, // 上次完成 3 組運動的日期
+            todayDate: getTodayStr(),
             todayCount: 0,
             dailyBonusClaimed: false,
             waterGoalClaimed: false,
@@ -218,6 +248,60 @@
         let plankRewardCoins = 15;
         let plankPaused = false;
         let audioCtx = null;
+
+        function checkDayRollover() {
+            const today = getTodayStr();
+            if (gameState.todayDate !== today) {
+                gameState.todayDate = today;
+                gameState.todayCount = 0;
+                gameState.dailyBonusClaimed = false;
+                gameState.waterGoalClaimed = false;
+                gameState.noSnackClaimed = false;
+                gameState.earlySleepClaimed = false;
+                saveData();
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                checkDayRollover();
+                renderUI();
+            }
+        });
+        window.addEventListener('focus', () => {
+            checkDayRollover();
+            renderUI();
+        });
+
+        // 只要今天達成任何一項日常好習慣（喝水、不吃宵夜、準時睡覺或完成運動），每日自律連續天數自動 +1
+        function markDailyHabitActive() {
+            const today = getTodayStr();
+            if (gameState.lastHabitDate !== today) {
+                gameState.streak += 1;
+                gameState.lastHabitDate = today;
+            }
+        }
+
+        function editStreakManually() {
+            const input = prompt('\ud83d\udd25 \u8abf\u6574\u300c\u6bcf\u65e5\u81ea\u5f8b\u9023\u7e8c\u5929\u6578\u300d\uff1a\n\uff08\u5929\u5929\u559d\u6c34/\u6212\u5bb5\u591c/\u65e9\u7761\u7d2f\u7a4d\uff09', gameState.streak);
+            if (input === null) return;
+            const val = parseInt(input.trim(), 10);
+            if (!isNaN(val) && val >= 0) {
+                gameState.streak = val;
+                gameState.lastHabitDate = getTodayStr();
+                saveData();
+            }
+        }
+
+        function editWorkoutCountManually() {
+            const input = prompt('\u26a1 \u8abf\u6574\u300c\u5169\u65e5\u4e00\u7df4\u9054\u6a19\u6b21\u6578\u300d\uff1a\n\uff08\u6bcf\u5169\u5929\u904b\u52d5\u5b8c\u8cfd\u7d2f\u7a4d\uff09', gameState.workoutSessions);
+            if (input === null) return;
+            const val = parseInt(input.trim(), 10);
+            if (!isNaN(val) && val >= 0) {
+                gameState.workoutSessions = val;
+                saveData();
+            }
+        }
 
         function playBeep(freq = 600, duration = 0.12, type = 'sine') {
             try {
@@ -237,6 +321,7 @@
         }
 
         function startPlankTimer(seconds, reward) {
+            checkDayRollover();
             if (plankInterval) clearInterval(plankInterval);
             plankTotalSeconds = seconds;
             plankRemainingSeconds = seconds;
@@ -309,6 +394,8 @@
             if (typeof data.waterGoalClaimed === 'undefined') data.waterGoalClaimed = false;
             if (typeof data.noSnackClaimed === 'undefined') data.noSnackClaimed = false;
             if (typeof data.earlySleepClaimed === 'undefined') data.earlySleepClaimed = false;
+            if (typeof data.workoutSessions === 'undefined') data.workoutSessions = data.streak || 0;
+            if (typeof data.lastHabitDate === 'undefined') data.lastHabitDate = null;
 
             if (data.rewards && data.rewards.length >= 3) {
                 data.rewards.forEach(r => {
@@ -318,14 +405,22 @@
                 });
             }
 
-            const today = new Date().toLocaleDateString();
-            if (data.todayDate !== today) {
+            const today = getTodayStr();
+            const legacyToday = new Date().toLocaleDateString();
+            if (data.todayDate !== today && data.todayDate !== legacyToday) {
                 data.todayDate = today;
                 data.todayCount = 0;
                 data.dailyBonusClaimed = false;
                 data.waterGoalClaimed = false;
                 data.noSnackClaimed = false;
                 data.earlySleepClaimed = false;
+            } else {
+                data.todayDate = today;
+                // 若今天已經領過任一習慣獎勵，確保當日自律火苗已點亮
+                if ((data.waterGoalClaimed || data.noSnackClaimed || data.earlySleepClaimed || data.dailyBonusClaimed) && data.lastHabitDate !== today) {
+                    data.streak = (data.streak || 0) + 1;
+                    data.lastHabitDate = today;
+                }
             }
             return data;
         }
@@ -371,6 +466,7 @@
                     throw new Error('Invalid format');
                 }
                 if (typeof importedData.waterGoalClaimed === 'undefined') importedData.waterGoalClaimed = false;
+                if (typeof importedData.workoutSessions === 'undefined') importedData.workoutSessions = importedData.streak || 0;
                 gameState = importedData;
                 saveData();
                 input.value = '';
@@ -382,73 +478,90 @@
         }
 
         function doExercise(name, coinReward) {
+            checkDayRollover();
             gameState.coins += coinReward;
             gameState.todayCount += 1;
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             gameState.history.unshift(`\u2705 [${timeStr}] \u5b8c\u6210 1 \u7d44\u3010${name}\u3011\uff0c\u7372\u5f97 +${coinReward} \ud83e\ude99`);
             if (gameState.history.length > 30) gameState.history.pop();
+
+            if (gameState.todayCount >= 3 && !gameState.dailyBonusClaimed) {
+                claimDailyBonus();
+                return;
+            }
+
             confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
             saveData();
         }
 
         function claimDailyBonus() {
+            checkDayRollover();
             if (gameState.todayCount < 3 || gameState.dailyBonusClaimed) return;
             const bonus = 35;
             gameState.coins += bonus;
             gameState.dailyBonusClaimed = true;
 
-            const today = new Date().toLocaleDateString();
+            const today = getTodayStr();
             if (gameState.lastCompletedDate !== today) {
-                gameState.streak += 1;
+                gameState.workoutSessions = (gameState.workoutSessions || 0) + 1;
                 gameState.lastCompletedDate = today;
             }
+            markDailyHabitActive();
 
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            gameState.history.unshift(`\ud83c\udf89 [${timeStr}] \u9054\u6210\u4eca\u65e5 15 \u5206\u9418\u76ee\u6a19\uff01\u9818\u53d6\u5b8c\u8cfd\u734e\u52f5 +${bonus} \ud83e\ude99\uff08\u9023\u7e8c ${gameState.streak} \u5929\uff09`);
-            confetti({ particleCount: 80, spread: 90, origin: { y: 0.6 } });
+            gameState.history.unshift(`\ud83c\udf89 [${timeStr}] \u5b8c\u6210\u5169\u65e5\u4e00\u7df4 3 \u7d44\u76ee\u6a19\uff01\u7372\u5f97\u5b8c\u8cfd\u734e\u52f5 +${bonus} \ud83e\ude99\uff08\u7d2f\u8a08 ${gameState.workoutSessions} \u6b21\u9054\u6a19\uff09`);
+            if (gameState.history.length > 30) gameState.history.pop();
+            confetti({ particleCount: 90, spread: 100, origin: { y: 0.6 } });
             saveData();
         }
 
         function claimWaterGoalReward() {
+            checkDayRollover();
             if (gameState.waterGoalClaimed) return;
             const reward = 30;
             gameState.coins += reward;
             gameState.waterGoalClaimed = true;
+            markDailyHabitActive();
 
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            gameState.history.unshift(`\ud83d\udca7 [${timeStr}] \u9054\u6210\u98f2\u6c34\u76ee\u6a19\u3010\u559d\u6c34\u8d85\u904e 2500ml\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99`);
+            gameState.history.unshift(`\ud83d\udca7 [${timeStr}] \u9054\u6210\u98f2\u6c34\u76ee\u6a19\u3010\u559d\u6c34\u8d85\u904e 2500ml\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99\uff08\u81ea\u5f8b\u9023\u7e8c ${gameState.streak} \u5929\uff09`);
             if (gameState.history.length > 30) gameState.history.pop();
             confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
             saveData();
         }
 
         function claimNoSnackReward() {
+            checkDayRollover();
             if (gameState.noSnackClaimed) return;
             const reward = 30;
             gameState.coins += reward;
             gameState.noSnackClaimed = true;
+            markDailyHabitActive();
 
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            gameState.history.unshift(`\ud83c\udf19 [${timeStr}] \u5b88\u4f4f\u6df1\u591c\u9632\u7dda\u3010\u4eca\u65e5\u4e0d\u5403\u5bb5\u591c\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99`);
+            gameState.history.unshift(`\ud83c\udf19 [${timeStr}] \u5b88\u4f4f\u6df1\u591c\u9632\u7dda\u3010\u4eca\u65e5\u4e0d\u5403\u5bb5\u591c\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99\uff08\u81ea\u5f8b\u9023\u7e8c ${gameState.streak} \u5929\uff09`);
             if (gameState.history.length > 30) gameState.history.pop();
             confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
             saveData();
         }
 
         function claimEarlySleepReward() {
+            checkDayRollover();
             if (gameState.earlySleepClaimed) return;
             const reward = 30;
             gameState.coins += reward;
             gameState.earlySleepClaimed = true;
+            markDailyHabitActive();
 
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            gameState.history.unshift(`\ud83d\udecc [${timeStr}] \u9054\u6210\u4f5c\u606f\u76ee\u6a19\u301012:15 \u6e96\u6642\u7761\u89ba\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99`);
+            gameState.history.unshift(`\ud83d\udecc [${timeStr}] \u9054\u6210\u4f5c\u606f\u76ee\u6a19\u301012:15 \u6e96\u6642\u7761\u89ba\u3011\uff0c\u7372\u5f97 +${reward} \ud83e\ude99\uff08\u81ea\u5f8b\u9023\u7e8c ${gameState.streak} \u5929\uff09`);
             if (gameState.history.length > 30) gameState.history.pop();
             confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
             saveData();
         }
 
         function redeemReward(id) {
+            checkDayRollover();
             const reward = gameState.rewards.find(r => r.id === id);
             if (!reward) return;
             if (gameState.coins < reward.cost) {
@@ -457,7 +570,7 @@
             }
             if (confirm(`\u78ba\u5b9a\u8981\u82b1\u8cbb ${reward.cost} \u91d1\u5e63\u514c\u63db\u300c${reward.name}\u300d\u55ce\uff1f`)) {
                 gameState.coins -= reward.cost;
-                const dateStr = new Date().toLocaleDateString();
+                const dateStr = getTodayStr();
                 gameState.history.unshift(`\ud83c\udf81 [${dateStr}] \u6210\u529f\u514c\u63db\u734e\u52f5\uff1a\u3010${reward.name}\u3011(-${reward.cost} \ud83e\ude99)`);
                 confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
                 saveData();
@@ -502,24 +615,45 @@
         function renderUI() {
             document.getElementById('coin-display').innerText = gameState.coins;
             document.getElementById('streak-display').innerText = gameState.streak;
+            document.getElementById('workout-streak-display').innerText = gameState.workoutSessions || 0;
 
             const progressCount = Math.min(gameState.todayCount, 3);
             document.getElementById('daily-progress-text').innerText = `${gameState.todayCount} / 3 \u7d44`;
             document.getElementById('daily-progress-bar').style.width = `${(progressCount / 3) * 100}%`;
 
+            // 判斷今天是否為「運動恢復日」（昨天已經做滿3組運動）
+            const yesterday = getYesterdayStr();
+            const isRestDay = (gameState.lastCompletedDate === yesterday) && !gameState.dailyBonusClaimed && gameState.todayCount === 0;
+            const restIndicator = document.getElementById('rest-day-indicator');
+            const scheduleBadge = document.getElementById('workout-schedule-badge');
+
+            if (gameState.dailyBonusClaimed) {
+                restIndicator.className = "text-xs bg-emerald-900/60 text-emerald-300 border border-emerald-600/50 px-2.5 py-1 rounded-full";
+                restIndicator.innerText = "\u2705 \u4eca\u65e5\u5df2\u5b8c\u8cfd";
+                scheduleBadge.innerText = "\u4eca\u65e5\u904b\u52d5\u5df2\u9054\u6a19\uff01\u660e\u5929\u53ef\u5b89\u5fc3\u4f11\u606f\u6062\u5fa9";
+            } else if (isRestDay) {
+                restIndicator.className = "text-xs bg-teal-900/60 text-teal-300 border border-teal-600/50 px-2.5 py-1 rounded-full";
+                restIndicator.innerText = "\ud83d\udfe2 \u4eca\u65e5\u70ba\u904b\u52d5\u6062\u5fa9\u65e5";
+                scheduleBadge.innerText = "\u6628\u5929\u5df2\u9054\u6a19\uff01\u4eca\u5929\u53ef\u4f11\u606f\u6216\u81ea\u7531\u52a0\u7df4";
+            } else {
+                restIndicator.className = "text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-full";
+                restIndicator.innerText = "\ud83d\udd25 \u4eca\u65e5\u70ba\u904b\u52d5\u65e5";
+                scheduleBadge.innerText = "\u4eca\u65e5\u904b\u52d5\u76ee\u6a19\uff08\u5b8c\u6210 3 \u7d44\u81ea\u52d5\u9818 +35 \ud83e\ude99\uff09";
+            }
+
             const bonusBtn = document.getElementById('daily-bonus-btn');
             if (gameState.dailyBonusClaimed) {
                 bonusBtn.disabled = true;
                 bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-emerald-900/40 text-emerald-400 border border-emerald-700/50 cursor-default";
-                bonusBtn.innerHTML = "\u2705 \u4eca\u65e5 15 \u5206\u9418\u5b8c\u8cfd\u734e\u52f5\u5df2\u9818\u53d6\uff01\u660e\u5929\u7e7c\u7e8c\u4fdd\u6301\uff01";
-            } else if (gameState.todayCount >= 3) {
-                bonusBtn.disabled = false;
-                bonusBtn.className = "btn-active w-full mt-2 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20 animate-pulse cursor-pointer";
-                bonusBtn.innerHTML = "\ud83c\udf89 \u9ede\u64ca\u9818\u53d6\u300c\u4eca\u65e5 15 \u5206\u9418\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99)\u300d\uff01";
+                bonusBtn.innerHTML = "\u2705 \u4eca\u65e5 15 \u5206\u9418\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99) \u5df2\u81ea\u52d5\u5165\u5e33\uff01";
+            } else if (isRestDay) {
+                bonusBtn.disabled = true;
+                bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-teal-950/50 text-teal-300 border border-teal-800/60 cursor-default";
+                bonusBtn.innerHTML = "\ud83c\udf3f \u4eca\u65e5\u70ba\u505a\u4e00\u4f11\u4e00\u6062\u5fa9\u65e5\uff08\u82e5\u984d\u5916\u904b\u52d5\u6eff 3 \u7d44\u4ecd\u53ef\u9818\u734e\uff09";
             } else {
                 bonusBtn.disabled = true;
                 bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-slate-700/60 text-slate-400 cursor-not-allowed";
-                bonusBtn.innerHTML = `\ud83c\udfaf \u518d\u5b8c\u6210 ${3 - gameState.todayCount} \u7d44\u52d5\u4f5c\u5373\u53ef\u9818\u53d6\u300c\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99)\u300d`;
+                bonusBtn.innerHTML = `\ud83c\udfaf \u518d\u5b8c\u6210 ${3 - gameState.todayCount} \u7d44\u52d5\u4f5c\uff0c\u81ea\u52d5\u9818\u53d6\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99)`;
             }
 
             const waterGoalBtn = document.getElementById('water-goal-btn');
@@ -636,7 +770,7 @@
 
             const historyList = document.getElementById('history-list');
             if (gameState.history.length === 0) {
-                historyList.innerHTML = '<li class="text-slate-500 italic">\u5c1a\u7121\u7d00\u9304\uff0c\u9ede\u64ca\u4e0a\u65b9\u6309\u9215\u958b\u59cb\u7b2c\u4e00\u7d44\u904b\u52d5\u5427\uff01</li>';
+                historyList.innerHTML = '<li class="text-slate-500 italic">\u5c1a\u7121\u7d00\u9304\uff0c\u9ede\u64ca\u4e0a\u65b9\u6309\u9215\u958b\u59cb\u7b2c\u4e00\u7d44\u4efb\u52d5\u5427\uff01</li>';
             } else {
                 historyList.innerHTML = gameState.history.map(item => `<li class="border-b border-slate-700/50 pb-1.5">${item}</li>`).join('');
             }
