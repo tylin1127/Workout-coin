@@ -91,8 +91,9 @@
                 <span id="rest-day-indicator" class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full">10~15 \u5206\u9418 / \u505a\u4e00\u4f11\u4e00</span>
             </div>
             
-            <div class="grid grid-cols-1 gap-3 pt-1">
-                <button onclick="doExercise('\\u4f0f\\u5730\\u633a\\u8eab', 15)" class="btn-active flex items-center justify-between bg-slate-700/70 hover:bg-slate-700 border border-slate-600 p-3.5 rounded-xl transition">
+            <div class="text-xs text-slate-400 font-semibold pt-1">\ud83c\udfe0 \u5c45\u5bb6\u5f92\u624b\u8a13\u7df4\uff08\u4efb\u9078\u7d2f\u7a4d\u6eff 3 \u7d44\u5b8c\u8cfd\uff09</div>
+            <div class="grid grid-cols-1 gap-3">
+                <button onclick="doExercise('\\u4f0f\\u5730\\u633a\\u8eab', 15, 1)" class="btn-active flex items-center justify-between bg-slate-700/70 hover:bg-slate-700 border border-slate-600 p-3.5 rounded-xl transition">
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl bg-slate-800 p-2 rounded-lg">\ud83d\udcaa</span>
                         <div class="text-left">
@@ -103,7 +104,7 @@
                     <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm">+15 \ud83e\ude99</span>
                 </button>
 
-                <button onclick="doExercise('\\u6df1\\u8e72', 15)" class="btn-active flex items-center justify-between bg-slate-700/70 hover:bg-slate-700 border border-slate-600 p-3.5 rounded-xl transition">
+                <button onclick="doExercise('\\u6df1\\u8e72', 15, 1)" class="btn-active flex items-center justify-between bg-slate-700/70 hover:bg-slate-700 border border-slate-600 p-3.5 rounded-xl transition">
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl bg-slate-800 p-2 rounded-lg">\ud83e\uddb5</span>
                         <div class="text-left">
@@ -123,7 +124,7 @@
                                 <div class="text-xs text-slate-400">\u5012\u6578\u7d50\u675f\u81ea\u52d5\u767c\u653e\u91d1\u5e63\u8207\u63d0\u793a\u97f3</div>
                             </div>
                         </div>
-                        <button onclick="doExercise('\\u68d2\\u5f0f (\\u624b\\u52d5)', 15)" class="btn-active text-xs bg-slate-800 hover:bg-slate-600 text-slate-300 border border-slate-600 px-2.5 py-1.5 rounded-lg transition">
+                        <button onclick="doExercise('\\u68d2\\u5f0f (\\u624b\\u52d5)', 15, 1)" class="btn-active text-xs bg-slate-800 hover:bg-slate-600 text-slate-300 border border-slate-600 px-2.5 py-1.5 rounded-lg transition">
                             \u624b\u52d5 +15 \ud83e\ude99
                         </button>
                     </div>
@@ -154,6 +155,47 @@
                             <div id="plank-timer-bar" class="bg-gradient-to-r from-teal-400 to-amber-400 h-2 rounded-full transition-all duration-1000" style="width: 100%"></div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- 一次性長時間運動專區（慢跑 30 分鐘 + 騎單車 + 登山，統一為 +50 金幣，點一下直接算滿 3 組完賽！） -->
+            <div class="pt-3 border-t border-slate-700/80 space-y-2.5">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-emerald-400 font-semibold">\ud83c\udfc3 \u4e00\u6b21\u6027\u9577\u6642\u9593\u904b\u52d5\uff08\u9ede\u4e00\u4e0b\u76f4\u63a5\u6eff 3 \u7d44\u5b8c\u8cfd\uff01\uff09</span>
+                </div>
+                <div class="grid grid-cols-1 gap-2.5">
+                    <button onclick="doExercise('\\u6162\\u8dd1 30 \\u5206\\u9418', 50, 3)" class="btn-active flex items-center justify-between bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-600/40 p-3.5 rounded-xl transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl bg-emerald-950 p-2 rounded-lg">\ud83c\udfc3</span>
+                            <div class="text-left">
+                                <div class="font-bold text-emerald-200">\u6162\u8dd1 30 \u5206\u9418 (\u76f4\u63a5\u5b8c\u8cfd)</div>
+                                <div class="text-xs text-emerald-400/80">\u5fc3\u80ba\u8010\u529b\u8207\u9ad8\u6548\u71c3\u8102\uff08\u542b\u5b8c\u8cfd\u734e\u5171 +85 \ud83e\ude99\uff09</div>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm shrink-0">+50 \ud83e\ude99</span>
+                    </button>
+
+                    <button onclick="doExercise('\\u9a0e\\u55ae\\u8eca / \\u6cb3\\u6ff1\\u515c\\u98a8', 50, 3)" class="btn-active flex items-center justify-between bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-600/40 p-3.5 rounded-xl transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl bg-emerald-950 p-2 rounded-lg">\ud83d\udeb4</span>
+                            <div class="text-left">
+                                <div class="font-bold text-emerald-200">\u9a0e\u55ae\u8eca / \u6cb3\u6ff1\u515c\u98a8 (\u76f4\u63a5\u5b8c\u8cfd)</div>
+                                <div class="text-xs text-emerald-400/80">\u4e0b\u80a2\u8010\u529b\u8207\u6236\u5916\u6709\u6c27\uff08\u542b\u5b8c\u8cfd\u734e\u5171 +85 \ud83e\ude99\uff09</div>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm shrink-0">+50 \ud83e\ude99</span>
+                    </button>
+
+                    <button onclick="doExercise('\\u767b\\u5c71 / \\u6b65\\u9053\\u5065\\u884c', 50, 3)" class="btn-active flex items-center justify-between bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-600/40 p-3.5 rounded-xl transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl bg-emerald-950 p-2 rounded-lg">\u26f0\ufe0f</span>
+                            <div class="text-left">
+                                <div class="font-bold text-emerald-200">\u767b\u5c71 / \u6236\u5916\u5065\u884c (\u76f4\u63a5\u5b8c\u8cfd)</div>
+                                <div class="text-xs text-emerald-400/80">\u9577\u6642\u9593\u5168\u8eab\u8017\u80fd\u6311\u6230\uff08\u542b\u5b8c\u8cfd\u734e\u5171 +85 \ud83e\ude99\uff09</div>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-3 py-1 rounded-lg text-sm shrink-0">+50 \ud83e\ude99</span>
+                    </button>
                 </div>
             </div>
 
@@ -356,7 +398,7 @@
 
                     document.getElementById('plank-timer-active').classList.add('hidden');
                     document.getElementById('plank-select-controls').classList.remove('hidden');
-                    doExercise(`\u68d2\u5f0f\u6490\u9ad4 (${plankTotalSeconds}\u79d2\u6311\u6230)`, plankRewardCoins);
+                    doExercise(`\u68d2\u5f0f\u6490\u9ad4 (${plankTotalSeconds}\u79d2\u6311\u6230)`, plankRewardCoins, 1);
                 }
             }, 1000);
         }
@@ -481,12 +523,13 @@
             }
         }
 
-        function doExercise(name, coinReward) {
+        function doExercise(name, coinReward, setsAdded = 1) {
             checkDayRollover();
             gameState.coins += coinReward;
-            gameState.todayCount += 1;
+            gameState.todayCount += setsAdded;
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            gameState.history.unshift(`\u2705 [${timeStr}] \u5b8c\u6210 1 \u7d44\u3010${name}\u3011\uff0c\u7372\u5f97 +${coinReward} \ud83e\ude99`);
+            const setLabel = setsAdded >= 3 ? '\u5b8c\u6210\u9577\u6642\u9593\u904b\u52d5' : '\u5b8c\u6210 1 \u7d44';
+            gameState.history.unshift(`\u2705 [${timeStr}] ${setLabel}\u3010${name}\u3011\uff0c\u7372\u5f97 +${coinReward} \ud83e\ude99`);
             if (gameState.history.length > 30) gameState.history.pop();
 
             if (gameState.todayCount >= 3 && !gameState.dailyBonusClaimed) {
@@ -494,7 +537,7 @@
                 return;
             }
 
-            confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
+            confetti({ particleCount: setsAdded >= 3 ? 65 : 30, spread: 60, origin: { y: 0.7 } });
             saveData();
         }
 
@@ -513,13 +556,12 @@
             markDailyHabitActive();
 
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            gameState.history.unshift(`\ud83c\udf89 [${timeStr}] \u5b8c\u6210\u5169\u65e5\u4e00\u7df4 3 \u7d44\u76ee\u6a19\uff01\u7372\u5f97\u5b8c\u8cfd\u734e\u52f5 +${bonus} \ud83e\ude99\uff08\u7d2f\u8a08 ${gameState.workoutSessions} \u6b21\u9054\u6a19\uff09`);
+            gameState.history.unshift(`\ud83c\udf89 [${timeStr}] \u5b8c\u6210\u5169\u65e5\u4e00\u7df4\u76ee\u6a19\uff01\u7372\u5f97\u5b8c\u8cfd\u734e\u52f5 +${bonus} \ud83e\ude99\uff08\u7d2f\u8a08 ${gameState.workoutSessions} \u6b21\u9054\u6a19\uff09`);
             if (gameState.history.length > 30) gameState.history.pop();
             confetti({ particleCount: 90, spread: 100, origin: { y: 0.6 } });
             saveData();
         }
 
-        // 新增：領取今日育兒情緒穩定 (+100 金幣)
         function claimCalmParentingReward() {
             checkDayRollover();
             if (gameState.calmParentingClaimed) return;
@@ -664,7 +706,7 @@
             if (gameState.dailyBonusClaimed) {
                 bonusBtn.disabled = true;
                 bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-emerald-900/40 text-emerald-400 border border-emerald-700/50 cursor-default";
-                bonusBtn.innerHTML = "\u2705 \u4eca\u65e5 15 \u5206\u9418\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99) \u5df2\u81ea\u52d5\u5165\u5e33\uff01";
+                bonusBtn.innerHTML = "\u2705 \u4eca\u65e5\u904b\u52d5\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99) \u5df2\u81ea\u52d5\u5165\u5e33\uff01";
             } else if (isRestDay) {
                 bonusBtn.disabled = true;
                 bonusBtn.className = "w-full mt-2 py-3 rounded-xl font-bold text-sm bg-teal-950/50 text-teal-300 border border-teal-800/60 cursor-default";
@@ -675,7 +717,6 @@
                 bonusBtn.innerHTML = `\ud83c\udfaf \u518d\u5b8c\u6210 ${3 - gameState.todayCount} \u7d44\u52d5\u4f5c\uff0c\u81ea\u52d5\u9818\u53d6\u5b8c\u8cfd\u734e\u52f5 (+35 \ud83e\ude99)`;
             }
 
-            // 渲染「育兒情緒穩定 (+100 金幣)」按鈕
             const calmParentingBtn = document.getElementById('calm-parenting-btn');
             if (gameState.calmParentingClaimed) {
                 calmParentingBtn.disabled = true;
